@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-kafka-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuri-almeid/nodejs-Kafka-Demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuri-almeid/nodejs-Kafka-Demo/issues"
+  },
+  "homepage": "https://github.com/yuri-almeid/nodejs-Kafka-Demo#readme",
+  "dependencies": {
+    "kafkajs": "^1.15.0"
+  }
+}
