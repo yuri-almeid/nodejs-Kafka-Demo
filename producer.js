@@ -4,7 +4,7 @@ const clientId = "sca";
 
 const brokers = ["localhost:9092"];
 
-const topic = "snackin-iot-logs";
+const topic = "SNACKIN_IOT_LOGS";
 
 
 const kafka = new Kafka({ clientId, brokers });
