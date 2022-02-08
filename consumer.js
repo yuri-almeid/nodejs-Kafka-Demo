@@ -23,6 +23,20 @@ function createConsumer(config, onData) {
   });
 }
 
+function makeOpenRequest(){
+  console.log('Sending open Command');
+  axios.get('http://127.0.0.1/abrir')
+    .then(function (response) {
+      // console.log(response);
+    })
+    .catch(function (error) {
+      // console.log(error);
+    })
+    .then(function () {
+      // always executed
+  });
+}
+
 async function consumerExample() {
   const config = await configFromCli();
 
@@ -36,18 +50,7 @@ async function consumerExample() {
 
   const consumer = await createConsumer(config, ({key, value, partition, offset}) => {
     console.log(`Consumed record with key ${key} and value ${value} of partition ${partition} @ offset ${offset}. Updated total count to ${++seen}`);
-    
-    console.log('Sending open Command');
-    axios.get('http://127.0.0.1/abrir')
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .then(function () {
-      // always executed
-    });
+    makeOpenRequest();
   });
 
   consumer.subscribe([config.topic]);
