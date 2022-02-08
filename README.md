@@ -1,1 +1,3 @@
 # nodejs-Kafka-Demo
+
+librdkafka

@@ -83,6 +83,8 @@ async function produceExample() {
     "access": 1
   }
 
+  // new Date().toLocaleString();
+
   const key = USER.cod;
   const value = Buffer.from(JSON.stringify( USER ));
 
