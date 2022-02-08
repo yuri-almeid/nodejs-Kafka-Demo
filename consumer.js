@@ -1,23 +1,53 @@
-const { Kafka } = require("kafkajs");
+const Kafka = require('node-rdkafka');
+const { configFromCli } = require('./config');
 
-const clientId = "sca";
+function createConsumer(config, onData) {
+  const consumer = new Kafka.KafkaConsumer({
+    'bootstrap.servers': config['bootstrap.servers'],
+    'sasl.username': config['sasl.username'],
+    'sasl.password': config['sasl.password'],
+    'security.protocol': config['security.protocol'],
+    'sasl.mechanisms': config['sasl.mechanisms'],
+    'group.id': 'node-example-group-1'
+  }, {
+    'auto.offset.reset': 'earliest'
+  });
 
-const brokers = ["localhost:9092"];
+  return new Promise((resolve, reject) => {
+    consumer
+      .on('ready', () => resolve(consumer))
+      .on('data', onData);
 
-const topic = "snackin-iot-logs";
-
-
-const kafka = new Kafka({ clientId, brokers });
-const consumer = kafka.consumer({ groupId: clientId });
-
-const consume = async () => {
-	await consumer.connect();
-	await consumer.subscribe({ topic });
-	await consumer.run({
-		eachMessage: ({ message }) => {
-			console.log(`received message: ${message.value}`);
-		},
-	})
+    consumer.connect();
+  });
 }
 
-module.exports = consume
+async function consumerExample() {
+  const config = await configFromCli();
+
+  if (config.usage) {
+    return console.log(config.usage);
+  }
+
+  console.log(`Consuming records from ${config.topic}`);
+
+  let seen = 0;
+
+  const consumer = await createConsumer(config, ({key, value, partition, offset}) => {
+    console.log(`Consumed record with key ${key} and value ${value} of partition ${partition} @ offset ${offset}. Updated total count to ${++seen}`);
+  });
+
+  consumer.subscribe([config.topic]);
+  consumer.consume();
+
+  process.on('SIGINT', () => {
+    console.log('\nDisconnecting consumer ...');
+    consumer.disconnect();
+  });
+}
+
+consumerExample()
+  .catch((err) => {
+    console.error(`Something went wrong:\n${err}`);
+    process.exit(1);
+  });
